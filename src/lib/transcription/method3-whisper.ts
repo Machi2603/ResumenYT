@@ -7,14 +7,25 @@ import { getOpenAIClient } from '../openai'
 
 const execAsync = promisify(exec)
 
+function writeCookiesFile(tmpDir: string): string | null {
+  const cookies = process.env.YTDLP_COOKIES
+  if (!cookies) return null
+  const cookiesPath = path.join(tmpDir, 'cookies.txt')
+  fs.writeFileSync(cookiesPath, cookies, 'utf-8')
+  return cookiesPath
+}
+
 export async function getTranscriptMethod3(videoId: string): Promise<string> {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ytdigest-whisper-'))
   const audioPath = path.join(tmpDir, 'audio.mp3')
 
   try {
+    const cookiesPath = writeCookiesFile(tmpDir)
+    const cookiesFlag = cookiesPath ? `--cookies "${cookiesPath}"` : ''
+
     // Download audio only
     await execAsync(
-      `yt-dlp -x --audio-format mp3 --audio-quality 3 -o "${audioPath}" "https://www.youtube.com/watch?v=${videoId}"`,
+      `yt-dlp --js-runtimes node ${cookiesFlag} -x --audio-format mp3 --audio-quality 3 -o "${audioPath}" "https://www.youtube.com/watch?v=${videoId}"`,
       { timeout: 120000 }
     )
 

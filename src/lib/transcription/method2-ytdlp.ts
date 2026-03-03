@@ -6,14 +6,25 @@ import os from 'os'
 
 const execAsync = promisify(exec)
 
+function writeCookiesFile(tmpDir: string): string | null {
+  const cookies = process.env.YTDLP_COOKIES
+  if (!cookies) return null
+  const cookiesPath = path.join(tmpDir, 'cookies.txt')
+  fs.writeFileSync(cookiesPath, cookies, 'utf-8')
+  return cookiesPath
+}
+
 export async function getTranscriptMethod2(videoId: string): Promise<string> {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ytdigest-'))
   const outputBase = path.join(tmpDir, 'sub')
 
   try {
+    const cookiesPath = writeCookiesFile(tmpDir)
+    const cookiesFlag = cookiesPath ? `--cookies "${cookiesPath}"` : ''
+
     // Download auto-generated subtitles in all available languages
     await execAsync(
-      `yt-dlp --write-auto-subs --skip-download --sub-langs "es,en,es-ES,en-US,es-419" --convert-subs vtt -o "${outputBase}" "https://www.youtube.com/watch?v=${videoId}"`,
+      `yt-dlp --js-runtimes node ${cookiesFlag} --write-auto-subs --skip-download --sub-langs "es,en,es-ES,en-US,es-419" --convert-subs vtt -o "${outputBase}" "https://www.youtube.com/watch?v=${videoId}"`,
       { timeout: 60000 }
     )
 
