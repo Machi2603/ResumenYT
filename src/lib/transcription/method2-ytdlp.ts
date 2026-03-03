@@ -7,10 +7,10 @@ import os from 'os'
 const execAsync = promisify(exec)
 
 function writeCookiesFile(tmpDir: string): string | null {
-  const cookies = process.env.YTDLP_COOKIES
-  if (!cookies) return null
+  const b64 = process.env.YTDLP_COOKIES_B64
+  if (!b64) return null
   const cookiesPath = path.join(tmpDir, 'cookies.txt')
-  fs.writeFileSync(cookiesPath, cookies, 'utf-8')
+  fs.writeFileSync(cookiesPath, Buffer.from(b64, 'base64').toString('utf-8'))
   return cookiesPath
 }
 
