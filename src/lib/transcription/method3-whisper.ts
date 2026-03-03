@@ -25,7 +25,7 @@ export async function getTranscriptMethod3(videoId: string): Promise<string> {
 
     // Download audio only
     await execAsync(
-      `yt-dlp --js-runtimes node ${cookiesFlag} -x --audio-format mp3 --audio-quality 3 -o "${audioPath}" "https://www.youtube.com/watch?v=${videoId}"`,
+      `yt-dlp --js-runtimes node:/usr/local/bin/node ${cookiesFlag} -x --audio-format mp3 --audio-quality 3 -o "${audioPath}" "https://www.youtube.com/watch?v=${videoId}"`,
       { timeout: 120000 }
     )
 
