@@ -96,11 +96,11 @@ export async function getTranscriptMethod3(videoId: string): Promise<string> {
       downloadOk = fs.readdirSync(tmpDir).some(f => f.startsWith('audio_raw.'))
     } catch {}
 
-    // Attempt 2: with cookies if available (fallback for age-restricted / sign-in required)
+    // Attempt 2: tv_embedded + cookies (handles age-restricted and n challenge)
     if (!downloadOk) {
       if (!cookiesPath) throw new Error('Bot detection: configura YTDLP_COOKIES_B64 para este vídeo')
       await execAsync(
-        `yt-dlp --cookies "${cookiesPath}" -x -o "${rawAudioPattern}" "https://www.youtube.com/watch?v=${videoId}"`,
+        `yt-dlp --cookies "${cookiesPath}" --extractor-args "youtube:player_client=tv_embedded" -x -o "${rawAudioPattern}" "https://www.youtube.com/watch?v=${videoId}"`,
         { timeout: 180000 }
       )
     }
