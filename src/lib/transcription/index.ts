@@ -1,38 +1,11 @@
-import { getTranscriptMethod1 } from './method1-youtube-transcript'
-import { getTranscriptMethod2 } from './method2-ytdlp'
 import { getTranscriptMethod3 } from './method3-whisper'
 
 export async function getTranscript(
   videoId: string,
   onProgress?: (step: string) => void
 ): Promise<string> {
-  // Method 1: youtube-transcript npm package
-  try {
-    onProgress?.('Buscando subtítulos nativos…')
-    const text = await getTranscriptMethod1(videoId)
-    if (text && text.length > 100) {
-      console.log('[Transcript] Método 1 exitoso (youtube-transcript)')
-      return text
-    }
-  } catch (e) {
-    console.log('[Transcript] Método 1 falló:', e)
-  }
-
-  // Method 2: yt-dlp subprocess
-  try {
-    onProgress?.('Extrayendo subtítulos con yt-dlp…')
-    const text = await getTranscriptMethod2(videoId)
-    if (text && text.length > 100) {
-      console.log('[Transcript] Método 2 exitoso (yt-dlp)')
-      return text
-    }
-  } catch (e) {
-    console.log('[Transcript] Método 2 falló:', e)
-  }
-
-  // Method 3: Whisper — download audio + OpenAI transcription
-  onProgress?.('Transcribiendo audio con Whisper IA… (puede tardar)')
-  console.log('[Transcript] Intentando Método 3 (Whisper)')
+  onProgress?.('Descargando audio y transcribiendo con Whisper… (puede tardar en vídeos largos)')
+  console.log('[Transcript] Usando Método 3 (Whisper local)')
   const text = await getTranscriptMethod3(videoId)
   if (!text || text.length < 50) throw new Error('No se pudo obtener transcripción')
   return text

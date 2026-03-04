@@ -24,7 +24,7 @@ export async function getTranscriptMethod2(videoId: string): Promise<string> {
 
     // Download auto-generated subtitles in all available languages
     await execAsync(
-      `yt-dlp ${cookiesFlag} --write-auto-subs --skip-download --sub-langs "es,en,es-ES,en-US,es-419" --convert-subs vtt -o "${outputBase}" "https://www.youtube.com/watch?v=${videoId}"`,
+      `yt-dlp ${cookiesFlag} --extractor-args "youtube:player_client=tv_embedded" --write-auto-subs --skip-download --sub-langs "es,en,es-ES,en-US,es-419" --convert-subs vtt -o "${outputBase}" "https://www.youtube.com/watch?v=${videoId}"`,
       { timeout: 60000 }
     )
 
