@@ -21,19 +21,52 @@ const itemVariants = {
 
 export function Hero() {
   const { scrollY } = useScroll()
-  const mockRotateX = useTransform(scrollY, [0, 400], [8, 0])
+  const mockRotateX = useTransform(scrollY, [0, 400], [12, 0])
   const mockScale = useTransform(scrollY, [0, 400], [0.95, 1])
-  const mockOpacity = useTransform(scrollY, [0, 200], [0.7, 1])
+  const mockOpacity = useTransform(scrollY, [0, 300], [1, 1])
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-8 overflow-hidden">
-      {/* Background halo */}
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-8 overflow-hidden bg-[#080810]">
+      {/* Grid lines background */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 opacity-100"
         style={{
-          background:
-            'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(239,68,68,0.07) 0%, transparent 70%)',
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px',
         }}
+      />
+
+      {/* Aurora orb 1 — red top-left */}
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          top: '-20%',
+          left: '-10%',
+          width: '700px',
+          height: '700px',
+          background: 'rgba(255,45,45,0.07)',
+          filter: 'blur(120px)',
+        }}
+        animate={{ x: [0, 30, -20, 0], y: [0, -20, 30, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Aurora orb 2 — indigo bottom-right */}
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          bottom: '-20%',
+          right: '-10%',
+          width: '600px',
+          height: '600px',
+          background: 'rgba(99,102,241,0.05)',
+          filter: 'blur(120px)',
+        }}
+        animate={{ x: [0, -25, 20, 0], y: [0, 25, -20, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       <motion.div
@@ -50,14 +83,16 @@ export function Hero() {
           Productividad · YouTube · IA
         </motion.p>
 
-        {/* Title */}
+        {/* Title — editorial mix */}
         <motion.h1
           variants={itemVariants}
-          className="text-6xl md:text-8xl leading-none tracking-tight text-white mb-6"
+          className="font-display font-extrabold text-7xl md:text-9xl leading-none tracking-tighter mb-6"
         >
-          <span className="font-serif italic text-zinc-200">Cualquier vídeo.</span>
+          <span className="text-white">Cualquier</span>
           <br />
-          <span className="font-sans font-bold">En minutos.</span>
+          <em className="font-serif italic text-zinc-500 font-normal">vídeo.</em>
+          <br />
+          <span className="text-white">En minutos.</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -72,9 +107,10 @@ export function Hero() {
         <motion.div variants={itemVariants} className="flex items-center gap-4">
           <Link
             href="/login"
-            className="px-7 py-3 bg-white text-black text-sm font-semibold rounded-xl hover:bg-zinc-100 transition-colors duration-200 font-sans"
+            className="relative group inline-flex items-center px-7 py-3 bg-white text-black text-sm font-semibold rounded-xl overflow-hidden hover:shadow-[0_0_40px_rgba(255,45,45,0.25)] transition-all duration-300 font-sans"
           >
-            Empezar gratis
+            <span className="relative z-10">Empezar gratis</span>
+            <span className="absolute inset-0 bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Link>
           <a
             href="#how"
@@ -93,7 +129,7 @@ export function Hero() {
           opacity: mockOpacity,
           transformPerspective: 1200,
         }}
-        className="relative z-10 mt-20 mx-auto w-full max-w-4xl rounded-2xl overflow-hidden border border-zinc-800/60 shadow-2xl"
+        className="relative z-10 mt-20 mx-auto w-full max-w-4xl rounded-2xl overflow-hidden border border-zinc-800/60 shadow-2xl shadow-black/50"
       >
         <MockChatUI />
       </motion.div>
@@ -103,13 +139,22 @@ export function Hero() {
 
 function MockChatUI() {
   return (
-    <div className="bg-[#16161a] flex h-[400px] md:h-[480px]">
+    <div
+      className="flex h-[400px] md:h-[480px]"
+      style={{ background: 'linear-gradient(135deg, #111116, #13131a)' }}
+    >
       {/* Sidebar */}
-      <div className="w-52 bg-[#111116] border-r border-zinc-800/60 p-4 hidden md:flex flex-col gap-3">
+      <div
+        className="w-52 border-r border-zinc-800 p-4 hidden md:flex flex-col gap-3"
+        style={{
+          background: '#0e0e14',
+          boxShadow: '1px 0 0 0 rgba(255,255,255,0.03)',
+        }}
+      >
         <div className="text-xs text-zinc-100 font-semibold font-sans mb-2">
           <span className="text-red-500 mr-1.5">●</span>YT Digest
         </div>
-        <div className="h-7 bg-zinc-900 rounded-md border border-zinc-800 w-full" />
+        <div className="h-7 bg-zinc-900 rounded-md border border-zinc-800/60 w-full" />
         <div className="text-xs text-zinc-700 uppercase tracking-widest mt-2 mb-1 font-sans">Recientes</div>
         {['Cómo aprender IA en 2024', 'Productividad con Notion', 'Design Systems'].map((t) => (
           <div key={t} className="text-xs text-zinc-500 truncate py-1.5 px-2 rounded-md hover:bg-zinc-900 font-sans">
@@ -131,21 +176,21 @@ function MockChatUI() {
           </div>
           {/* User message */}
           <div className="flex justify-end">
-            <div className="bg-[#2a2a32] text-xs text-zinc-300 px-3.5 py-2.5 rounded-2xl rounded-br-md max-w-xs font-sans">
+            <div className="bg-[#2a2a32] border border-red-500/10 text-xs text-zinc-300 px-3.5 py-2.5 rounded-2xl rounded-br-md max-w-xs font-sans">
               ¿Cuál es el punto más importante?
             </div>
           </div>
           {/* AI response */}
           <div className="flex gap-3">
             <span className="text-red-500 text-xs mt-0.5 flex-shrink-0">●</span>
-            <div className="text-xs text-zinc-400 leading-relaxed font-sans">
-              El autor argumenta que la clave está en aprender a <span className="text-zinc-200 font-medium">delegar tareas cognitivas</span> a la IA manteniendo el juicio crítico propio...
+            <div className="text-xs text-zinc-300 leading-relaxed font-sans">
+              El autor argumenta que la clave está en aprender a <span className="text-zinc-100 font-medium">delegar tareas cognitivas</span> a la IA manteniendo el juicio crítico propio...
             </div>
           </div>
         </div>
         {/* Input */}
         <div className="border-t border-zinc-800/60 p-4">
-          <div className="bg-[#1c1c22] rounded-xl border border-zinc-800 px-4 py-2.5 text-xs text-zinc-700 font-sans">
+          <div className="bg-[#1c1c22] rounded-xl border border-zinc-800 ring-1 ring-white/5 px-4 py-2.5 text-xs text-zinc-600 font-sans">
             Pega un enlace de YouTube o escribe…
           </div>
         </div>

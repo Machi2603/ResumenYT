@@ -14,7 +14,7 @@ function StepText({
 }) {
   return (
     <div>
-      <span className="text-xs text-zinc-700 font-mono tracking-widest">{number}</span>
+      <span className="text-xs text-zinc-500 font-mono tracking-widest">{number}</span>
       <h3 className="text-xl md:text-2xl font-semibold text-white mt-2 mb-3 leading-tight font-sans">
         {title}
       </h3>
@@ -25,8 +25,8 @@ function StepText({
 
 function MetricCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-950/50">
-      <div className="text-3xl md:text-4xl font-bold text-white tracking-tight font-sans">
+    <div className="border border-zinc-800 rounded-xl p-6 bg-gradient-to-br from-zinc-950 to-zinc-900">
+      <div className="text-3xl md:text-4xl font-bold text-red-400 tracking-tight font-sans">
         {value}
       </div>
       <div className="text-xs text-zinc-600 mt-2 font-sans">{label}</div>
@@ -35,15 +35,16 @@ function MetricCard({ value, label }: { value: string; label: string }) {
 }
 
 function MockUIStep({ scrollProgress }: { scrollProgress: MotionValue<number> }) {
-  const step1 = useTransform(scrollProgress, [0, 0.25, 0.33], [1, 1, 0])
-  const step2 = useTransform(scrollProgress, [0.33, 0.45, 0.60, 0.66], [0, 1, 1, 0])
-  const step3 = useTransform(scrollProgress, [0.66, 0.78, 1], [0, 1, 1])
+  // Fixed: overlapping ranges eliminate the invisible gaps
+  const step1 = useTransform(scrollProgress, [0, 0.08, 0.28, 0.38], [1, 1, 1, 0])
+  const step2 = useTransform(scrollProgress, [0.33, 0.43, 0.60, 0.70], [0, 1, 1, 0])
+  const step3 = useTransform(scrollProgress, [0.65, 0.75, 1], [0, 1, 1])
 
   return (
     <div className="relative w-full h-full">
       {/* Step 1: URL input */}
       <motion.div style={{ opacity: step1 }} className="absolute inset-0 p-4 flex flex-col gap-3">
-        <div className="text-xs text-zinc-700 font-sans mb-2">Pegando enlace…</div>
+        <div className="text-xs text-zinc-600 font-sans mb-2">Pegando enlace…</div>
         <div className="bg-[#1c1c22] rounded-lg border border-zinc-700 px-3 py-2 text-xs text-zinc-400 font-mono">
           https://youtube.com/watch?v=dQw4w9WgXcQ
         </div>
@@ -117,17 +118,18 @@ export function ScrollSequence() {
     offset: ['start start', 'end end'],
   })
 
-  const step1Opacity = useTransform(scrollYProgress, [0, 0.15, 0.28, 0.33], [0, 1, 1, 0])
-  const step1Y = useTransform(scrollYProgress, [0, 0.15], [40, 0])
+  // Fixed: overlapping ranges eliminate the invisible gaps between steps
+  const step1Opacity = useTransform(scrollYProgress, [0, 0.08, 0.28, 0.38], [0, 1, 1, 0])
+  const step1Y = useTransform(scrollYProgress, [0, 0.08], [40, 0])
 
-  const step2Opacity = useTransform(scrollYProgress, [0.33, 0.45, 0.60, 0.66], [0, 1, 1, 0])
-  const step2Y = useTransform(scrollYProgress, [0.33, 0.45], [40, 0])
+  const step2Opacity = useTransform(scrollYProgress, [0.33, 0.43, 0.60, 0.70], [0, 1, 1, 0])
+  const step2Y = useTransform(scrollYProgress, [0.33, 0.43], [40, 0])
 
-  const step3Opacity = useTransform(scrollYProgress, [0.66, 0.78, 1], [0, 1, 1])
-  const step3Y = useTransform(scrollYProgress, [0.66, 0.78], [40, 0])
+  const step3Opacity = useTransform(scrollYProgress, [0.65, 0.75, 1], [0, 1, 1])
+  const step3Y = useTransform(scrollYProgress, [0.65, 0.75], [40, 0])
 
   const uiScale = useTransform(scrollYProgress, [0, 0.5], [0.85, 1])
-  const uiOpacity = useTransform(scrollYProgress, [0, 0.2], [0.4, 1])
+  const uiOpacity = useTransform(scrollYProgress, [0, 0.2], [0.8, 1])
   const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
   return (
@@ -139,7 +141,7 @@ export function ScrollSequence() {
 
         {/* Progress bar */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-32 h-px bg-zinc-900">
-          <motion.div style={{ width: progressWidth }} className="h-full bg-zinc-600" />
+          <motion.div style={{ width: progressWidth }} className="h-full bg-red-500" />
         </div>
 
         {/* 3-column grid */}
@@ -171,7 +173,7 @@ export function ScrollSequence() {
 
           {/* Center: mock UI */}
           <motion.div
-            style={{ scale: uiScale, opacity: uiOpacity }}
+            style={{ scale: uiScale, opacity: uiOpacity, boxShadow: '0 0 60px -10px rgba(255,45,45,0.1)' }}
             className="rounded-2xl border border-zinc-800 overflow-hidden bg-[#16161a] aspect-[9/14] max-h-[480px] relative"
           >
             <MockUIStep scrollProgress={scrollYProgress} />

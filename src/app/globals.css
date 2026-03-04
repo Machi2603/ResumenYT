@@ -15,8 +15,10 @@
   --text-primary:   #f0f0f0;
   --text-secondary: #a1a1aa;
   --text-muted:     #52525b;
-  --accent:         #e5e5e5;
-  --accent-dot:     #ef4444;
+  --accent:             #ff2d2d;
+  --accent-dot:         #ff2d2d;
+  --accent-glow:        rgba(255,45,45,0.15);
+  --accent-glow-strong: rgba(255,45,45,0.3);
   --font-serif:     'Instrument Serif', Georgia, serif;
   --font-sans:      'Syne', 'DM Sans', sans-serif;
   --font-mono:      'JetBrains Mono', monospace;
@@ -76,6 +78,22 @@ body {
   70% { transform: translate(-2%, 1%); }
   80% { transform: translate(3%, -3%); }
   90% { transform: translate(-1%, 2%); }
+}
+
+@keyframes aurora {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  33%       { transform: translate(3%, -2%) scale(1.05); }
+  66%       { transform: translate(-2%, 3%) scale(0.97); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
 }
 
 /* Loading dot animation */

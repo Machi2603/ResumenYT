@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Instrument_Serif, Syne } from 'next/font/google'
+import { Instrument_Serif, Syne, Bricolage_Grotesque } from 'next/font/google'
 import './globals.css'
 
 const instrumentSerif = Instrument_Serif({
@@ -15,6 +15,12 @@ const syne = Syne({
   variable: '--font-sans',
 })
 
+const bricolageGrotesque = Bricolage_Grotesque({
+  weight: ['400', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-display',
+})
+
 export const metadata: Metadata = {
   title: 'YT Digest — Resume cualquier vídeo de YouTube',
   description:
@@ -23,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${instrumentSerif.variable} ${syne.variable}`}>
+    <html lang="es" className={`${instrumentSerif.variable} ${syne.variable} ${bricolageGrotesque.variable}`}>
       <body className="grain antialiased font-sans">
         {children}
       </body>
