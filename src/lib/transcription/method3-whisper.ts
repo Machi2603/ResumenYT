@@ -6,13 +6,6 @@ import os from 'os'
 
 const execAsync = promisify(exec)
 
-function writeCookiesFile(tmpDir: string): string | null {
-  const b64 = process.env.YTDLP_COOKIES_B64
-  if (!b64) return null
-  const cookiesPath = path.join(tmpDir, 'cookies.txt')
-  fs.writeFileSync(cookiesPath, Buffer.from(b64, 'base64').toString('utf-8'))
-  return cookiesPath
-}
 
 async function getAudioDuration(audioPath: string): Promise<number> {
   const { stdout } = await execAsync(
@@ -83,24 +76,23 @@ export async function getTranscriptMethod3(videoId: string): Promise<string> {
   const audioPath = path.join(tmpDir, 'audio.mp3')
 
   try {
-    const cookiesPath = writeCookiesFile(tmpDir)
+    const url = `https://www.youtube.com/watch?v=${videoId}`
 
-    // Step 1: Download audio in best available format
-    // Attempt 1: tv_embedded client (avoids bot detection on most public videos)
+    // Step 1: Download audio
+    // Attempt 1: simple download
     let downloadOk = false
     try {
       await execAsync(
-        `yt-dlp --extractor-args "youtube:player_client=tv_embedded" -x -o "${rawAudioPattern}" "https://www.youtube.com/watch?v=${videoId}"`,
+        `yt-dlp -x --audio-format mp3 -o "${rawAudioPattern}" "${url}"`,
         { timeout: 180000 }
       )
       downloadOk = fs.readdirSync(tmpDir).some(f => f.startsWith('audio_raw.'))
     } catch {}
 
-    // Attempt 2: tv_embedded + cookies (handles age-restricted and n challenge)
+    // Attempt 2: with browser user-agent (bot detection fallback)
     if (!downloadOk) {
-      if (!cookiesPath) throw new Error('Bot detection: configura YTDLP_COOKIES_B64 para este vídeo')
       await execAsync(
-        `yt-dlp --cookies "${cookiesPath}" --extractor-args "youtube:player_client=tv_embedded" -x -o "${rawAudioPattern}" "https://www.youtube.com/watch?v=${videoId}"`,
+        `yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" -x --audio-format mp3 -o "${rawAudioPattern}" "${url}"`,
         { timeout: 180000 }
       )
     }
